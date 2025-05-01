@@ -1,0 +1,89 @@
+# Helmfile is a declarative spec for deploying helm charts.
+# Full list of configs can be found here - https://helmfile.readthedocs.io/en/stable/#configuration
+bases:
+  - environments.yaml
+
+---
+
+helmDefaults:
+  skipDeps: {{ eq .Environment.Name "default" }}
+
+---
+
+releases:
+  - name: common-infrastructure
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/common-infrastructure
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/common-infrastructure/{{ . }}
+      {{- end }}
+  # Add deployment releases here
+  - name: kafka-cluster
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/kafka-cluster
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/kafka-cluster/{{ . }}
+      {{- end }}
+  - name: spark-operator
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/spark-operator
+    wait: true
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/spark-operator/{{ . }}
+      {{- end }}
+  - name: spark-infrastructure
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/spark-infrastructure
+    wait: true
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/spark-infrastructure/{{ . }}
+      {{- end }}
+  - name: policy-decision-point
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/policy-decision-point
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/policy-decision-point/{{ . }}
+      {{- end }}
+  - name: configuration-store
+    namespace: test-679-v1-config
+    chart: test-679-v1-deploy/src/main/resources/apps/configuration-store
+    wait: true
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/configuration-store/{{ . }}
+      {{- end }}
+  - name: s3-local
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/s3-local
+    condition: helm.s3local.enabled
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/s3-local/{{ . }}
+      {{- end }}
+  - name: pipeline-invocation-service
+    namespace: test-679-v1
+    chart: test-679-v1-deploy/src/main/resources/apps/pipeline-invocation-service
+    needs:
+      - test-679-v1-config/configuration-store
+    values:
+      {{- range .Values.helm.valueFiles }}
+      - test-679-v1-deploy/src/main/resources/apps/pipeline-invocation-service/{{ . }}
+      {{- end }}
+

@@ -1,0 +1,38 @@
+metadata:
+    name: pyspark-pipeline
+sparkApp:
+  spec:
+    type: Python
+    image: "docker-registry-PLACEHOLDER/repository/test-679-v1-spark-worker-docker:1.0.0-SNAPSHOT"
+    mainApplicationFile: "local:///opt/spark/jobs/pipelines/pyspark-pipeline/pyspark_pipeline_driver.py"
+    deps:
+      packages:
+        - com.mysql:mysql-connector-j:9.2.0
+        - org.apache.hadoop:hadoop-aws:3.4.1
+        - software.amazon.awssdk:bundle:2.31.8
+        - io.delta:delta-spark_2.12:3.2.1
+        - io.delta:delta-storage:3.2.1
+      excludePackages: []
+    hadoopConf:
+      fs.s3a.fast.upload: "true"
+      fs.s3a.path.style: "true"
+    driver:
+      cores: 1
+      coreLimit: "1200m"
+      memory: "2048m"
+      # Setup these secret key references within your SealedSecret 
+      envFrom:
+        - secretRef:
+            name: remote-auth-config
+      env:
+        - name: KRAUSENING_BASE
+          value: /opt/spark/krausening/base
+    executor:
+      cores: 1
+      memory: "4096m"
+      envFrom:
+        - secretRef:
+            name: remote-auth-config
+      env:
+        - name: KRAUSENING_BASE
+          value: /opt/spark/krausening/base

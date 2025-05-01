@@ -1,0 +1,12 @@
+dependencies:
+- name: aissemble-spark-history-chart
+  repository: oci://ghcr.io/boozallen
+  version: 1.13.0-SNAPSHOT
+- name: aissemble-thrift-server-chart
+  repository: oci://ghcr.io/boozallen
+  version: 1.13.0-SNAPSHOT
+- name: aissemble-hive-metastore-service-chart
+  repository: oci://ghcr.io/boozallen
+  version: 1.13.0-SNAPSHOT
+digest: sha256:7e85dd554d9c2450197d02013f625839f10f4b0ac11d81a7f16f9961735bdc0e
+generated: "2025-05-01T12:07:02.12824-07:00"

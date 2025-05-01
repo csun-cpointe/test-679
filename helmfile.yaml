@@ -1,0 +1,52 @@
+# Helmfile is a declarative spec for deploying helm charts.
+# Full list of configs can be found here - https://helmfile.readthedocs.io/en/stable/#configuration
+bases:
+  - environments.yaml
+
+---
+
+helmfiles:
+  - path: ./helmfile-apps.yaml
+missingFileHandler: Error
+
+templates:
+  default: &default
+    hooks:
+      - events: [ "presync" ]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "delete"
+          - "sparkapplication"
+          - "--all"
+          - "-n"
+          - "test-679-v1"
+
+releases:
+  # Add deployment releases here
+  - name: persist-pipeline
+    namespace: test-679-v1
+    chart: oci://ghcr.io/boozallen/aissemble-spark-application-chart
+    version: {{ .Values.aissembleVersion }}
+    <<: *default
+    values:
+      - test-679-v1-pipelines/persist-pipeline/src/main/resources/apps/persist-pipeline-base-values.yaml
+      {{ if eq .Environment.Name "default" }}
+      - test-679-v1-pipelines/persist-pipeline/src/main/resources/apps/persist-pipeline-dev-values.yaml
+      {{- end }}
+      {{ if eq .Environment.Name "ci" }}
+      - test-679-v1-pipelines/persist-pipeline/src/main/resources/apps/persist-pipeline-ci-values.yaml
+      {{- end }}
+  - name: pyspark-pipeline
+    namespace: test-679-v1
+    chart: oci://ghcr.io/boozallen/aissemble-spark-application-chart
+    version: {{ .Values.aissembleVersion }}
+    <<: *default
+    values:
+      - test-679-v1-pipelines/pyspark-pipeline/src/pyspark_pipeline/resources/apps/pyspark-pipeline-base-values.yaml
+      {{ if eq .Environment.Name "default" }}
+      - test-679-v1-pipelines/pyspark-pipeline/src/pyspark_pipeline/resources/apps/pyspark-pipeline-dev-values.yaml
+      {{- end }}
+      {{ if eq .Environment.Name "ci" }}
+      - test-679-v1-pipelines/pyspark-pipeline/src/pyspark_pipeline/resources/apps/pyspark-pipeline-ci-values.yaml
+      {{- end }}
