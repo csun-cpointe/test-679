@@ -7,7 +7,7 @@
 name = "pyspark-pipeline"
 version = "1.0.0.dev"
 description = "Description of package"
-authors = [{name = "Your Name", email = "you@example.com"}]
+authors = [{name = "aiSSEMBLE Baseline Community", email = "aissemble@bah.com"}]
 requires-python = ">=3.8"
 dynamic = ["version", "dependencies"]
 

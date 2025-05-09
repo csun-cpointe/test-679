@@ -37,7 +37,7 @@ public class PersistPipelineDriver extends PersistPipelineBaseDriver {
   private static final Logger logger = LoggerFactory.getLogger(PersistPipelineDriver.class);
   
   public static void main(String[] args) {
-    logger.info("STARTED: {} driver", "PersistPipeline");
+    logger.info("STARTED: {} driver --------------------- updated", "PersistPipeline");
     PersistPipelineBaseDriver.main(args);
 
 

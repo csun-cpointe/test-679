@@ -10,7 +10,7 @@ helmfiles:
 missingFileHandler: Error
 
 templates:
-  default: &default
+  default: &teardownPipelines
     hooks:
       - events: [ "presync" ]
         showlogs: true
@@ -28,7 +28,7 @@ releases:
     namespace: test-679-v1
     chart: oci://ghcr.io/boozallen/aissemble-spark-application-chart
     version: {{ .Values.aissembleVersion }}
-    <<: *default
+    <<: *teardownPipelines
     values:
       - test-679-v1-pipelines/persist-pipeline/src/main/resources/apps/persist-pipeline-base-values.yaml
       {{ if eq .Environment.Name "default" }}
@@ -41,7 +41,7 @@ releases:
     namespace: test-679-v1
     chart: oci://ghcr.io/boozallen/aissemble-spark-application-chart
     version: {{ .Values.aissembleVersion }}
-    <<: *default
+    <<: *teardownPipelines
     values:
       - test-679-v1-pipelines/pyspark-pipeline/src/pyspark_pipeline/resources/apps/pyspark-pipeline-base-values.yaml
       {{ if eq .Environment.Name "default" }}

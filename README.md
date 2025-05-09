@@ -3,7 +3,7 @@
 This project leverages [Helmfile](https://helmfile.readthedocs.io/en/latest/) for deployment. Follow the below commands
 to deploy or tear down the project/pipeline(s):
 
-- Deploy project all project applications except pipeline: `helmfile apply -f helmfile-apps.yaml`
+- Deploy all project applications except pipeline: `helmfile apply -f helmfile-apps.yaml`
 - Deploy pipeline: `helmfile sync -l name=<pipeline-name>`
 - Tear down pipeline: `helmfile destroy -l name=<pipeline-name>`
 - Tear down project: `helmfile destroy`
